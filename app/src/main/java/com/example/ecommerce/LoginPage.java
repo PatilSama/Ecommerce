@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +48,7 @@ public class LoginPage extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         mAuth = FirebaseAuth.getInstance();
 
+        getSupportActionBar().setHomeButtonEnabled(true);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,8 +56,6 @@ public class LoginPage extends AppCompatActivity {
                         .addOnCompleteListener(LoginPage.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        Toast.makeText(LoginPage.this, ""+task.isSuccessful(), Toast.LENGTH_SHORT).show();
                         if(task.isSuccessful())
                         {
                             Toast.makeText(LoginPage.this, "Success", Toast.LENGTH_SHORT).show();
@@ -65,7 +65,12 @@ public class LoginPage extends AppCompatActivity {
                             Toast.makeText(LoginPage.this, "User Already Exit", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(LoginPage.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
 
         });
